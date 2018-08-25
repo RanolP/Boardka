@@ -55,11 +55,11 @@ public class Boardka {
         disposed = true;
     }
 
-    public static Boardka getScoreboard(PlayerEvent e) {
-        return getScoreboard(e.getPlayer());
+    public static Boardka of(PlayerEvent e) {
+        return of(e.getPlayer());
     }
 
-    public static Boardka getScoreboard(Player player) {
+    public static Boardka of(Player player) {
         Objects.requireNonNull(player, "player");
         if (USING.containsKey(player.getUniqueId())) {
             return USING.get(player.getUniqueId());

@@ -83,7 +83,7 @@ public final class TestListener implements Listener {
   @EventHandler
   public void onJoin(PlayerJoinEvent e) {
     // Use boardka api
-    Boardka board = Boardka.getScoreboard(e);
+    Boardka board = Boardka.of(e);
     board.sidebar().apply(lines).title("My Server").show();
     BoardkaManager.renderAll();
   }
@@ -100,7 +100,7 @@ public final class TestListener implements Listener {
     new BukkitRunnable() {
       @Override
       public void run() {
-        Boardka.getScoreboard(player).sidebar().update();
+        Boardka.of(player).sidebar().update();
       }
     }.runTask(BoardkaPlugin.getPlugin(BoardkaPlugin.class));
   }
@@ -117,7 +117,7 @@ public final class TestListener implements Listener {
     new BukkitRunnable() {
       @Override
       public void run() {
-        Boardka.getScoreboard(player).sidebar().update();
+        Boardka.of(player).sidebar().update();
       }
     }.runTask(BoardkaPlugin.getPlugin(BoardkaPlugin.class));
   }
