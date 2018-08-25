@@ -90,6 +90,15 @@ public class SidebarLines {
                     line = "CAN'T RENDER THIS";
                 }
                 Team team = scoreboard._handle().getTeam(score.getEntry());
+                String current;
+                if (team.getSuffix().isEmpty()) {
+                    current = team.getPrefix();
+                } else {
+                    current = team.getPrefix() + team.getSuffix().substring(2);
+                }
+                if (line.equals(current)) {
+                    continue;
+                }
                 if (line.length() > 16) {
                     int target;
                     if (line.charAt(15) == ChatColor.COLOR_CHAR) {
