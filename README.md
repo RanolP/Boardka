@@ -1,3 +1,8 @@
+[![Travis](https://img.shields.io/travis/RanolP/Boardka.svg)](https://travis-ci.org/RanolP/Boardka)
+[![GitHub release](https://img.shields.io/github/release/RanolP/Boardka.svg)](https://github.com/RanolP/Boardka/releases)
+![Github All Releases](https://img.shields.io/github/downloads/RanolP/Boardka/total.svg)
+[![GitHub](https://img.shields.io/github/license/RanolP/Boardka.svg)](https://github.com/RanolP/Boardka/blob/master/LICENSE)
+
 # Boardka
 
 Dirty scoreboard library
