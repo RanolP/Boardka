@@ -1,3 +1,8 @@
+[![Travis](https://img.shields.io/travis/RanolP/Boardka.svg)](https://travis-ci.org/RanolP/Boardka)
+[![GitHub release](https://img.shields.io/github/release/RanolP/Boardka.svg)](https://github.com/RanolP/Boardka/releases)
+![Github All Releases](https://img.shields.io/github/downloads/RanolP/Boardka/total.svg)
+[![GitHub](https://img.shields.io/github/license/RanolP/Boardka.svg)](https://github.com/RanolP/Boardka/blob/master/LICENSE)
+
 # Boardka
 
 Dirty scoreboard library
@@ -23,7 +28,7 @@ dependencies {
 
 Add following code to your `pom.xml` file.
 
-```maven
+```xml
 <repositories>
   <repository>
     <id>jitpack.io</id>
@@ -54,9 +59,7 @@ public final class TestListener implements Listener {
           return "Spectator";
         default:
           return Math.round(player.getHealth()) + " / " + Math.round(
-            player.getAttribute(
-              Attribute.GENERIC_MAX_HEALTH
-            ).getValue()
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()
           );
       }
     }
@@ -69,10 +72,7 @@ public final class TestListener implements Listener {
       // Constant. It'll never change.
       .appendConstant(ChatColor.AQUA, ChatColor.BOLD, "Players")
       // Global. It updates on render request.
-      .appendGlobal(
-        () -> ChatColor.GRAY.toString()
-                + Bukkit.getOnlinePlayers().size()
-      )
+      .appendGlobal(() -> ChatColor.GRAY.toString() + Bukkit.getOnlinePlayers().size())
       // equals to appendConstant("")
       .appendEmptyLine()
       .appendConstant(ChatColor.AQUA, ChatColor.BOLD, "Health")
