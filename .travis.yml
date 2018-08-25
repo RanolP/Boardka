@@ -18,6 +18,7 @@ deploy:
   api_key:
     secure: VnQZqIbKut2YWscXYGK6KnWSliEiL4QbuNkcyHyi2uGl4towJGOMbcoCKx0u7dOu2pZhC7Hp3MzLVTDwDxfgJnHSAp8FEMfIX8zIfZVG9voieBT0/HVmxuwc2DMlE39X/k9MMIOPBrqDcwPwc5wIp4LxMO+oDaoJVbrhzTq8f6ihfNDNY1xVjCQM/7t/dzNIB4THjxs6puiwJgIP1Ncp8tE83ECuwGOJz6Uccpg0UIhzTQVHx5QGuBRiitA0s+mg8uvSP2Bq4XAr4C5masWy4y8NS67k/YnTkxP/V1ks/kF92Jqws9AWCMtyc6qvMg1AsulgOwqrWbJcMHbdWEAFevdpFKnRuJG0IKjGTOZVUMAK1pqvEqSU6mfX4s7x9vEzb87nlmKdWau+m+CYyGQ8ce1Nx/7FwnZOtR32rb0HHCAL77BOSQwoNGGJAyPfp2/jmPMmHZjO3VjFxHcqSr3iY08j34f605nDIXSV2REKfyTiMWsiMcU7jzdzllj6JDrGEEYmv2cj9i26Hd6L2N0PX7R/ILmEwP9mz2lON5whgDstO2Th+hvmnjL5LMos7nbSbguwmlzsLHBF1x18ClBt+6+UpcX/tcSBao1aU8L5abp/EWNssn8Py9AtE6ufBS53uVRvknwxUzWP2hBRLILovoMHWYEl7I51N8ywSkHOsYo=
   file: 'build/libs/Boardka.jar'
+  skip_cleanup: true
   on:
     repo: RanolP/Boardka
     tags: true
