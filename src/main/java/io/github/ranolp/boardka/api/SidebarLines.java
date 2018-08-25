@@ -73,7 +73,7 @@ public class SidebarLines {
         for (Map.Entry<Player, List<String>> entry : texts.entrySet()) {
             Player player = entry.getKey();
             List<String> value = entry.getValue();
-            Boardka scoreboard = Boardka.getScoreboard(player);
+            Boardka scoreboard = Boardka.of(player);
             Sidebar sidebar = scoreboard.sidebar();
             sidebar._requestSize(value.size());
             Stack<Score> scores = sidebar._scores;

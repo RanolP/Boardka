@@ -11,7 +11,7 @@ public class BoardkaManager {
     }
 
     public static void render(Player player) {
-        Sidebar sidebar = Boardka.getScoreboard(player).sidebar();
+        Sidebar sidebar = Boardka.of(player).sidebar();
         if (sidebar._lines == null) {
             return;
         }
@@ -25,7 +25,7 @@ public class BoardkaManager {
     public static void render(Collection<? extends Player> players) {
         Map<SidebarLines, List<Player>> map = new HashMap<>();
         for (Player it : players) {
-            map.computeIfAbsent(Boardka.getScoreboard(it).sidebar()._lines, k -> new ArrayList<>()).add(it);
+            map.computeIfAbsent(Boardka.of(it).sidebar()._lines, k -> new ArrayList<>()).add(it);
         }
         for (Map.Entry<SidebarLines, List<Player>> entry : map.entrySet()) {
             SidebarLines key = entry.getKey();
