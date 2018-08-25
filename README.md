@@ -23,7 +23,7 @@ dependencies {
 
 Add following code to your `pom.xml` file.
 
-```maven
+```xml
 <repositories>
   <repository>
     <id>jitpack.io</id>
@@ -54,9 +54,7 @@ public final class TestListener implements Listener {
           return "Spectator";
         default:
           return Math.round(player.getHealth()) + " / " + Math.round(
-            player.getAttribute(
-              Attribute.GENERIC_MAX_HEALTH
-            ).getValue()
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()
           );
       }
     }
@@ -69,10 +67,7 @@ public final class TestListener implements Listener {
       // Constant. It'll never change.
       .appendConstant(ChatColor.AQUA, ChatColor.BOLD, "Players")
       // Global. It updates on render request.
-      .appendGlobal(
-        () -> ChatColor.GRAY.toString()
-                + Bukkit.getOnlinePlayers().size()
-      )
+      .appendGlobal(() -> ChatColor.GRAY.toString() + Bukkit.getOnlinePlayers().size())
       // equals to appendConstant("")
       .appendEmptyLine()
       .appendConstant(ChatColor.AQUA, ChatColor.BOLD, "Health")
