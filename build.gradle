@@ -33,3 +33,10 @@ processResources {
         filter ReplaceTokens, tokens: [version: version]
     }
 }
+
+task prepareUpload(type: Copy, dependsOn: ['build']) {
+    from "$buildDir/libs"
+    into "$buildDir/libs"
+    include "Boardka-${project.version}.jar"
+    rename "Boardka-${project.version}.jar", 'Boardka.jar'
+}
