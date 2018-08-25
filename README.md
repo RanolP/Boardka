@@ -1,0 +1,4 @@
+# Boardka
+
+Dirty scoreboard library
+
