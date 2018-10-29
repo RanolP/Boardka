@@ -15,7 +15,8 @@ public class Sidebar {
 
     Sidebar(Boardka parent) {
         this.parent = parent;
-        this.handle = parent._handle().registerNewObjective("__sidebar", "dummy", "");
+        this.handle = parent._handle().registerNewObjective("__sidebar", "dummy");
+        handle.setDisplayName("");
     }
 
 
