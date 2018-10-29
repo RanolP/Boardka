@@ -2,4 +2,4 @@ name: Boardka
 description: Dirty scoreboard library
 author: Ranol_
 version: @version@
-main: io.github.ranolp.boardka.Boardka
+main: io.github.ranolp.boardka.BoardkaPlugin
