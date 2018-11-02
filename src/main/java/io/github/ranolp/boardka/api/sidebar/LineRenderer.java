@@ -8,7 +8,9 @@ import java.util.Set;
 
 public abstract class LineRenderer {
     @Nonnull
-    public abstract Map<Player, String> compute(@Nonnull Set<Player> players);
+    public static SidebarLineBuilder.ByPlayer byPlayer() {
+        return new SidebarLineBuilder.ByPlayer();
+    }
 
     @Nonnull
     public static SidebarLineBuilder.Constant constant() {
@@ -24,4 +26,7 @@ public abstract class LineRenderer {
     public static <T> SidebarLineBuilder.Grouped<T> grouped() {
         return new SidebarLineBuilder.Grouped<>();
     }
+
+    @Nonnull
+    public abstract Map<Player, String> compute(@Nonnull Set<Player> players);
 }

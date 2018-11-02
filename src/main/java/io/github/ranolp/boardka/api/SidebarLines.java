@@ -8,12 +8,17 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SidebarLines {
+public final class SidebarLines {
     private final List<LineRenderer> lines = new ArrayList<>();
 
     private SidebarLines() {
+    }
+
+    public static SidebarLines newInstance() {
+        return new SidebarLines();
     }
 
     public SidebarLines append(LineRenderer line) {
@@ -45,8 +50,8 @@ public class SidebarLines {
         return append(LineRenderer.global().computeBy(computer).build());
     }
 
-    public static SidebarLines newInstance() {
-        return new SidebarLines();
+    public SidebarLines appendByPlayerLine(Function<Player, String> computer) {
+        return append(LineRenderer.byPlayer().computeBy(computer).build());
     }
 
     /*********************************************************

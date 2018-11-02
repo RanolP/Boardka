@@ -10,6 +10,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class SidebarLineBuilder {
+    public abstract LineRenderer build();
+
     public static class Constant extends SidebarLineBuilder {
         private String text;
 
@@ -25,20 +27,6 @@ public abstract class SidebarLineBuilder {
     }
 
     public static class Global extends SidebarLineBuilder {
-        private static final class GlobalLineRenderer$Builded extends GlobalLineRenderer {
-            private final Supplier<String> computer;
-
-            GlobalLineRenderer$Builded(Supplier<String> computer) {
-                this.computer = computer;
-            }
-
-            @Nonnull
-            @Override
-            public String compute() {
-                return computer.get();
-            }
-        }
-
         private Supplier<String> computer;
 
         public Global text(String text) {
@@ -55,29 +43,53 @@ public abstract class SidebarLineBuilder {
         public LineRenderer build() {
             return new GlobalLineRenderer$Builded(computer);
         }
-    }
 
-    public static class PlayerlessGrouped<T> extends SidebarLineBuilder {
-        private static final class PlayerlessGroupedLineRenderer$Builded<T> extends PlayerlessGroupedLineRenderer<T> {
-            private final Function<Player, T> grouper;
-            private final Function<T, String> computer;
+        private static final class GlobalLineRenderer$Builded extends GlobalLineRenderer {
+            private final Supplier<String> computer;
 
-            PlayerlessGroupedLineRenderer$Builded(Function<Player, T> grouper, Function<T, String> computer) {
-                this.grouper = grouper;
+            GlobalLineRenderer$Builded(Supplier<String> computer) {
                 this.computer = computer;
             }
 
             @Nonnull
-            public T group(@Nonnull Player player) {
-                return grouper.apply(player);
+            @Override
+            public String compute() {
+                return computer.get();
+            }
+        }
+    }
+
+    public static class ByPlayer extends SidebarLineBuilder {
+        private Function<Player, String> computer;
+
+        public ByPlayer computeBy(Function<Player, String> computer) {
+            this.computer = computer;
+            return this;
+        }
+
+        @Override
+        public LineRenderer build() {
+            if (computer == null) {
+                throw new IllegalStateException("Computer not set");
+            }
+            return new ByPlayer$Built(computer);
+        }
+
+        private static final class ByPlayer$Built extends ByPlayerLineRenderer {
+            private final Function<Player, String> computer;
+
+            ByPlayer$Built(Function<Player, String> computer) {
+                this.computer = computer;
             }
 
             @Nonnull
-            public String compute(@Nonnull T object) {
-                return computer.apply(object);
+            public String compute(@Nonnull Player player) {
+                return computer.apply(player);
             }
         }
+    }
 
+    public static class PlayerlessGrouped<T> extends SidebarLineBuilder {
         private Function<Player, T> grouper;
         private Function<T, String> computer;
 
@@ -99,17 +111,14 @@ public abstract class SidebarLineBuilder {
             if (computer == null) {
                 throw new IllegalStateException("Computer not set");
             }
-            return new PlayerlessGroupedLineRenderer$Builded<>(grouper, computer);
+            return new PlayerlessGroupedLineRenderer$Built<>(grouper, computer);
         }
-    }
 
-    public static class Grouped<T> extends SidebarLineBuilder {
-        private static final class GroupedLineRenderer$Builded<T> extends GroupedLineRenderer<T> {
+        private static final class PlayerlessGroupedLineRenderer$Built<T> extends PlayerlessGroupedLineRenderer<T> {
             private final Function<Player, T> grouper;
-            private final BiFunction<T, Set<Player>, Map<Player, String>> computer;
+            private final Function<T, String> computer;
 
-            GroupedLineRenderer$Builded(Function<Player, T> grouper,
-                                        BiFunction<T, Set<Player>, Map<Player, String>> computer) {
+            PlayerlessGroupedLineRenderer$Built(Function<Player, T> grouper, Function<T, String> computer) {
                 this.grouper = grouper;
                 this.computer = computer;
             }
@@ -120,11 +129,13 @@ public abstract class SidebarLineBuilder {
             }
 
             @Nonnull
-            public Map<Player, String> compute(@Nonnull T object, @Nonnull Set<Player> player) {
-                return computer.apply(object, player);
+            public String compute(@Nonnull T object) {
+                return computer.apply(object);
             }
         }
+    }
 
+    public static class Grouped<T> extends SidebarLineBuilder {
         private Function<Player, T> grouper;
         private BiFunction<T, Set<Player>, Map<Player, String>> computer;
 
@@ -150,9 +161,28 @@ public abstract class SidebarLineBuilder {
             if (computer == null) {
                 throw new IllegalStateException("Computer not set");
             }
-            return new GroupedLineRenderer$Builded<>(grouper, computer);
+            return new GroupedLineRenderer$Built<>(grouper, computer);
+        }
+
+        private static final class GroupedLineRenderer$Built<T> extends GroupedLineRenderer<T> {
+            private final Function<Player, T> grouper;
+            private final BiFunction<T, Set<Player>, Map<Player, String>> computer;
+
+            GroupedLineRenderer$Built(Function<Player, T> grouper,
+                    BiFunction<T, Set<Player>, Map<Player, String>> computer) {
+                this.grouper = grouper;
+                this.computer = computer;
+            }
+
+            @Nonnull
+            public T group(@Nonnull Player player) {
+                return grouper.apply(player);
+            }
+
+            @Nonnull
+            public Map<Player, String> compute(@Nonnull T object, @Nonnull Set<Player> player) {
+                return computer.apply(object, player);
+            }
         }
     }
-
-    public abstract LineRenderer build();
 }
