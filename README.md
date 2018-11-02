@@ -44,4 +44,4 @@ Add following code to your `pom.xml` file.
 
 ## Examples
 
-- Official Example, see [here](https://github.com/RanolP/Boardka/blob/master/example)
+- Official Example, see [here](/blob/master/example)
