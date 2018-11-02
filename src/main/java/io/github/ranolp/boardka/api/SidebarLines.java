@@ -28,7 +28,7 @@ public class SidebarLines {
     public SidebarLines appendConstant(Object... texts) {
         StringBuilder builder = new StringBuilder();
         for (Object text : texts) {
-            builder.append(Objects.toString(text));
+            builder.append(text);
         }
         return appendConstant(builder.toString());
     }
