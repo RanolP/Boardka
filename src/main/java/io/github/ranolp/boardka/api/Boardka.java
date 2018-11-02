@@ -1,58 +1,17 @@
 package io.github.ranolp.boardka.api;
 
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
 
-public class Boardka {
-    private static final Queue<Boardka> AVAILABLE = new LinkedList<>();
-    private static final Map<UUID, Boardka> USING = new HashMap<>();
+public abstract class Boardka {
+    static final Queue<_PlayerBoardka> AVAILABLE = new LinkedList<>();
+    static final Map<UUID, _PlayerBoardka> USING = new HashMap<>();
 
-    private Scoreboard handle;
-    private boolean disposed = false;
-    private Sidebar sidebar;
-
-    private Boardka(Player target) {
-        this._target = target;
-        handle = Bukkit.getScoreboardManager().getNewScoreboard();
-        this._target.setScoreboard(handle);
-    }
-
-    Scoreboard _handle() {
-        _checkDisposed();
-        return handle;
-    }
-
-    public Sidebar sidebar() {
-        if (sidebar == null) {
-            sidebar = new Sidebar(this);
-        }
-        return sidebar;
-    }
-
-    public boolean isDisposed() {
-        return disposed;
-    }
-
-    public void dispose(boolean safe) {
-        if (disposed) {
-            if (safe) {
-                return;
-            } else {
-                throw new IllegalStateException("Already disposed");
-            }
-        }
-        USING.remove(_target.getUniqueId(), this);
-        AVAILABLE.add(this);
-        // is it ok?
-        if (_target.getScoreboard() == handle) {
-            _target.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-        }
-        sidebar._dispose();
-        disposed = true;
+    Boardka() {
     }
 
     public static Boardka of(PlayerEvent e) {
@@ -64,15 +23,23 @@ public class Boardka {
         if (USING.containsKey(player.getUniqueId())) {
             return USING.get(player.getUniqueId());
         } else if (!AVAILABLE.isEmpty()) {
-            Boardka scoreboard = AVAILABLE.poll();
-            scoreboard._updateTarget(player);
+            _PlayerBoardka scoreboard = AVAILABLE.poll();
+            scoreboard._target = player;
             USING.put(player.getUniqueId(), scoreboard);
             return scoreboard;
         } else {
-            Boardka scoreboard = new Boardka(player);
+            _PlayerBoardka scoreboard = new _PlayerBoardka(player);
             USING.put(player.getUniqueId(), scoreboard);
             return scoreboard;
         }
+    }
+
+    public static Boardka of(EntityEvent event) {
+        return of(event.getEntity());
+    }
+
+    public static Boardka of(Entity entity) {
+        return entity instanceof Player ? of((Player) entity) : _EmptyBoardka.SingletonHolder.INSTANCE;
     }
 
     public static void dispose(PlayerEvent e) {
@@ -93,23 +60,9 @@ public class Boardka {
         }
     }
 
-    /*********************************************************
-     *                                                       *
-     *                      ! WARNING !                      *
-     *     Following methods, fields are used internally     *
-     *             You MUST NOT use the methods.             *
-     *                                                       *
-     *********************************************************/
+    public abstract Sidebar sidebar();
 
-    Player _target;
+    public abstract boolean isDisposed();
 
-    private void _updateTarget(Player target) {
-        this._target = target;
-    }
-
-    private void _checkDisposed() {
-        if (disposed) {
-            throw new IllegalStateException("Disposed");
-        }
-    }
+    public abstract void dispose(boolean safe);
 }

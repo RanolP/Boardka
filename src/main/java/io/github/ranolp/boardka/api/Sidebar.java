@@ -1,99 +1,28 @@
 package io.github.ranolp.boardka.api;
 
-import org.bukkit.ChatColor;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.plugin.Plugin;
 
-import java.util.Stack;
-
-public class Sidebar {
-    private Boardka parent;
-    private boolean show;
-    private Objective handle;
-
-    Sidebar(Boardka parent) {
-        this.parent = parent;
-        this.handle = parent._handle().registerNewObjective("__sidebar", "dummy");
-        handle.setDisplayName("");
+public abstract class Sidebar {
+    Sidebar() {
     }
 
+    public abstract boolean isShowing();
 
-    public boolean isShowing() {
-        return this.show;
-    }
+    public abstract Sidebar title(String title);
 
-    public Sidebar title(String title) {
-        handle.setDisplayName(title);
-        return this;
-    }
+    public abstract Sidebar apply(SidebarLines lines);
 
-    public Sidebar apply(SidebarLines lines) {
-        this._lines = lines;
-        return this;
-    }
+    public abstract void update();
 
+    public abstract void updateLater(Plugin plugin, long delay);
 
-    public void update() {
-        BoardkaManager.render(parent._target);
-    }
+    public abstract void updateLater(Plugin plugin);
 
-    public void show() {
-        if (this.show) {
-            return;
-        }
-        this.show = true;
-        handle.setDisplaySlot(DisplaySlot.SIDEBAR);
-        update();
-    }
+    public abstract void updateLater(long delay);
 
-    public void hide() {
-        if (!this.show) {
-            return;
-        }
-        this.show = false;
-        handle.setDisplaySlot(null);
-    }
+    public abstract void updateLater();
 
-    /*********************************************************
-     *                                                       *
-     *                      ! WARNING !                      *
-     *     Following methods, fields are used internally     *
-     *             You MUST NOT use the methods.             *
-     *                                                       *
-     *********************************************************/
+    public abstract void show();
 
-    SidebarLines _lines;
-    Stack<Score> _scores = new Stack<>();
-
-    void _requestSize(int size) {
-        while (_scores.size() > size) {
-            Score score = _scores.pop();
-            parent._handle().resetScores(score.getEntry());
-        }
-        while (_scores.size() < size) {
-            Score score = handle.getScore(makeColorId(0x5b0 + _scores.size()));
-            score.setScore(16 - _scores.size());
-            _scores.add(score);
-            if (parent._handle().getTeams().stream().noneMatch(it -> it.getName().equals(score.getEntry()))) {
-                Team team = parent._handle().registerNewTeam(score.getEntry());
-                team.addEntry(score.getEntry());
-            }
-        }
-    }
-
-    private static String makeColorId(int id) {
-        StringBuilder builder = new StringBuilder();
-        for (String s : String.format("%03x", id).split("")) {
-            builder.append(ChatColor.COLOR_CHAR).append(s);
-        }
-        return builder.toString();
-    }
-
-    void _dispose() {
-        hide();
-        _lines = null;
-        _requestSize(0);
-    }
+    public abstract void hide();
 }

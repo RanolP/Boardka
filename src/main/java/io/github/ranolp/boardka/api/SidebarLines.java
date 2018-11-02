@@ -73,32 +73,22 @@ public class SidebarLines {
         for (Map.Entry<Player, List<String>> entry : texts.entrySet()) {
             Player player = entry.getKey();
             List<String> value = entry.getValue();
-            Boardka scoreboard = Boardka.of(player);
-            Sidebar sidebar = scoreboard.sidebar();
+            _PlayerBoardka scoreboard = (_PlayerBoardka) Boardka.of(player);
+            _PlayerSidebar sidebar = (_PlayerSidebar) scoreboard.sidebar();
             sidebar._requestSize(value.size());
             Stack<Score> scores = sidebar._scores;
             for (int i = 0; i < scores.size(); i++) {
                 Score score = scores.get(i);
                 String line = value.get(i);
                 if (line.length() > 28) {
-                    Bukkit.getLogger().severe(String.format(
-                            "Can't render scoreboard sidebar for player '%s' on line %d. data is %s",
-                            player.getName(),
-                            i,
-                            line
-                    ));
+                    Bukkit.getLogger()
+                            .severe(String.format(
+                                    "Can't render scoreboard sidebar for player '%s' on line %d. data is %s",
+                                    player.getName(), i, line
+                            ));
                     line = "CAN'T RENDER THIS";
                 }
                 Team team = scoreboard._handle().getTeam(score.getEntry());
-                String current;
-                if (team.getSuffix().isEmpty()) {
-                    current = team.getPrefix();
-                } else {
-                    current = team.getPrefix() + team.getSuffix().substring(2);
-                }
-                if (line.equals(current)) {
-                    continue;
-                }
                 if (line.length() > 16) {
                     int target;
                     if (line.charAt(15) == ChatColor.COLOR_CHAR) {
