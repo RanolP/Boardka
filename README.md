@@ -15,12 +15,11 @@ Add following code to your `build.gradle` file.
 
 ```gradle
 repositories {
-  ...
   maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-  implementation 'com.github.RanolP:Boardka:-SNAPSHOT'
+  implementation group: 'com.github.RanolP', name: 'Boardka', version: '-SNAPSHOT'
 }
 ```
 
