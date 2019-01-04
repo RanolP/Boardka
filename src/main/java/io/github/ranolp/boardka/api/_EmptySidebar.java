@@ -2,6 +2,13 @@ package io.github.ranolp.boardka.api;
 
 import org.bukkit.plugin.Plugin;
 
+/*********************************************************
+ *                                                       *
+ *                      ! WARNING !                      *
+ *              This class used internally,              *
+ *            You MUST NOT use this directly.            *
+ *                                                       *
+ *********************************************************/
 final class _EmptySidebar extends Sidebar {
     private _EmptySidebar() {
     }

@@ -4,14 +4,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
+/*********************************************************
+ *                                                       *
+ *                      ! WARNING !                      *
+ *              This class used internally,              *
+ *            You MUST NOT use this directly.            *
+ *                                                       *
+ *********************************************************/
 final class _PlayerBoardka extends Boardka {
-    /*********************************************************
-     *                                                       *
-     *                      ! WARNING !                      *
-     *     Following methods, fields are used internally     *
-     *             You MUST NOT use the methods.             *
-     *                                                       *
-     *********************************************************/
 
     Player _target;
     private Scoreboard handle;
@@ -59,6 +59,10 @@ final class _PlayerBoardka extends Boardka {
         }
         sidebar._dispose();
         disposed = true;
+    }
+
+    void _reuse() {
+        disposed = false;
     }
 
     private void _checkDisposed() {

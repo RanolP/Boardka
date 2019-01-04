@@ -1,5 +1,12 @@
 package io.github.ranolp.boardka.api;
 
+/*********************************************************
+ *                                                       *
+ *                      ! WARNING !                      *
+ *              This class used internally,              *
+ *            You MUST NOT use this directly.            *
+ *                                                       *
+ *********************************************************/
 final class _EmptyBoardka extends Boardka {
     private _EmptyBoardka() {
     }

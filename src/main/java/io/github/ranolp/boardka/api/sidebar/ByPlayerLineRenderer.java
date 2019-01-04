@@ -9,23 +9,23 @@ import java.util.Set;
 
 public abstract class ByPlayerLineRenderer extends LineRenderer {
     @Nonnull
-    public abstract String compute(@Nonnull Player player);
+    public abstract String render(@Nonnull Player player);
 
-    protected void startCompute() {
+    protected void startRender() {
     }
 
-    protected void endCompute() {
+    protected void endRender() {
     }
 
     @Nonnull
     @Override
-    public final Map<Player, String> compute(@Nonnull Set<Player> players) {
-        startCompute();
+    public final Map<Player, String> render(@Nonnull Set<Player> players) {
+        startRender();
         Map<Player, String> result = new HashMap<>();
         for (Player it : players) {
-            result.put(it, compute(it));
+            result.put(it, render(it));
         }
-        endCompute();
+        endRender();
         return result;
     }
 }

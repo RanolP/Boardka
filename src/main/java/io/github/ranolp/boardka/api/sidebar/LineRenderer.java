@@ -28,5 +28,5 @@ public abstract class LineRenderer {
     }
 
     @Nonnull
-    public abstract Map<Player, String> compute(@Nonnull Set<Player> players);
+    public abstract Map<Player, String> render(@Nonnull Set<Player> players);
 }

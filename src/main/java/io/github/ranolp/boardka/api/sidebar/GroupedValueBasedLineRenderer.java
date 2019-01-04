@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class PlayerlessGroupedLineRenderer<T> extends GroupedLineRenderer<T> {
+public abstract class GroupedValueBasedLineRenderer<T> extends GroupedLineRenderer<T> {
     @Nonnull
     public abstract String compute(@Nonnull T object);
 
     @Nonnull
     @Override
-    protected Map<Player, String> compute(@Nonnull T object, @Nonnull Set<Player> player) {
+    protected Map<Player, String> render(@Nonnull T object, @Nonnull Set<Player> player) {
         String data = compute(object);
         Map<Player, String> map = new HashMap<>();
         for (Player it : player) {

@@ -11,15 +11,14 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.Stack;
 
+/*********************************************************
+ *                                                       *
+ *                      ! WARNING !                      *
+ *              This class used internally,              *
+ *            You MUST NOT use this directly.            *
+ *                                                       *
+ *********************************************************/
 final class _PlayerSidebar extends Sidebar {
-    /*********************************************************
-     *                                                       *
-     *                      ! WARNING !                      *
-     *     Following methods, fields are used internally     *
-     *             You MUST NOT use the methods.             *
-     *                                                       *
-     *********************************************************/
-
     SidebarLines _lines;
     Stack<Score> _scores = new Stack<>();
     private _PlayerBoardka parent;
@@ -61,7 +60,7 @@ final class _PlayerSidebar extends Sidebar {
 
     @Override
     public void update() {
-        BoardkaManager.render(parent._target);
+        BoardkaManager.renderSidebar(parent._target);
     }
 
     @Override
@@ -132,6 +131,6 @@ final class _PlayerSidebar extends Sidebar {
 
     @Override
     public String toString() {
-        return "Boardka.Sidebar(player=" + parent._target.getName() + ", show=" + show + ")";
+        return "Boardka.Sidebar(player=" + parent._target.getName() + ", lines=" + _lines + ", show=" + show + ")";
     }
 }

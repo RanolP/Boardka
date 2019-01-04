@@ -13,22 +13,23 @@ final class SidebarDefiniton {
     static final SidebarLines LINES = SidebarLines.newInstance()
             // Constant. It'll never change.
             .appendConstant(ChatColor.AQUA, ChatColor.BOLD, "Players")
-            // Global. It updates on render request.
+            // Global. It updates on renderSidebar request.
             .appendGlobal(() -> ChatColor.GRAY.toString() + Bukkit.getOnlinePlayers().size())
             // equals to appendConstant("")
-            .appendEmptyLine()
-            .appendConstant(ChatColor.AQUA, ChatColor.BOLD, "Health")
+            .appendEmptyLine().appendConstant(ChatColor.AQUA, ChatColor.BOLD, "Health")
             // Custom line renderer
-            .append(new HealthLineRenderer())
-            .appendEmptyLine()
+            .append(new HealthLineRenderer()).appendEmptyLine()
             // by-player line renderer
-            .appendByPlayerLine(player -> ChatColor.AQUA + "Level " + ChatColor.RESET + player.getLevel());
+            .appendByPlayerLine(player -> ChatColor.AQUA + "Level " + ChatColor.RESET + player.getLevel())
+            // Global. It updates on renderSidebar request.
+            .appendGlobal(() -> ChatColor.AQUA.toString() + "Naver Realtime Search Top : " + ChatColor.RESET
+                    + NaverSearch.getBest());
 
     // Custom renderer implementation
     private static final class HealthLineRenderer extends ByPlayerLineRenderer {
         @Nonnull
         @Override
-        public String compute(@Nonnull Player player) {
+        public String render(@Nonnull Player player) {
             switch (player.getGameMode()) {
                 case CREATIVE:
                     return "Creative";

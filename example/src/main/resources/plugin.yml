@@ -1,5 +1,5 @@
 name: Example
 version: 1.0
-main: io.github.ranolp.boardka.example.example.Example
+main: io.github.ranolp.boardka.example.Example
 author: Ranol_
 description: Boardka Example Plugin

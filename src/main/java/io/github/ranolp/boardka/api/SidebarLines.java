@@ -7,30 +7,65 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Scoreboard sidebar lines data object.
+ */
 public final class SidebarLines {
     private final List<LineRenderer> lines = new ArrayList<>();
 
     private SidebarLines() {
     }
 
+    /**
+     * Create new instance.
+     *
+     * @return new instance
+     */
+    @Nonnull
     public static SidebarLines newInstance() {
         return new SidebarLines();
     }
 
-    public SidebarLines append(LineRenderer line) {
-        lines.add(line);
+    /**
+     * Append custom line renderer.
+     *
+     * @param lineRenderer
+     *         custom line renderer
+     * @return self
+     */
+    @Nonnull
+    public SidebarLines append(@Nonnull LineRenderer lineRenderer) {
+        Objects.requireNonNull(lineRenderer, "lineRenderer");
+        lines.add(lineRenderer);
         return this;
     }
 
+    /**
+     * Append empty line.
+     *
+     * @return self
+     */
+    @Nonnull
     public SidebarLines appendEmptyLine() {
         return appendConstant("");
     }
 
-    public SidebarLines appendConstant(Object... texts) {
+    /**
+     * Append constant text.
+     *
+     * @param texts
+     *         texts
+     * @return self
+     */
+    @Nonnull
+    public SidebarLines appendConstant(@Nonnull Object... texts) {
+        Objects.requireNonNull(texts, "texts");
         StringBuilder builder = new StringBuilder();
         for (Object text : texts) {
             builder.append(text);
@@ -38,20 +73,52 @@ public final class SidebarLines {
         return appendConstant(builder.toString());
     }
 
-    public SidebarLines appendConstant(String... texts) {
-        return appendConstant(String.join("", texts));
+    /**
+     * Append constant text.
+     *
+     * @param texts
+     *         texts
+     * @return self
+     */
+    @Nonnull
+    public SidebarLines appendConstant(@Nonnull String... texts) {
+        return appendConstant(String.join("", Objects.requireNonNull(texts, "texts")));
     }
 
-    public SidebarLines appendConstant(String text) {
+    /**
+     * Append constant text.
+     *
+     * @param text
+     *         text
+     * @return self
+     */
+    @Nonnull
+    public SidebarLines appendConstant(@Nullable String text) {
         return append(LineRenderer.constant().text(text).build());
     }
 
-    public SidebarLines appendGlobal(Supplier<String> computer) {
-        return append(LineRenderer.global().computeBy(computer).build());
+    /**
+     * Append global line renderer
+     *
+     * @param renderer
+     *         the renderer
+     * @return self
+     */
+    @Nonnull
+    public SidebarLines appendGlobal(@Nonnull Supplier<String> renderer) {
+        return append(LineRenderer.global().renderBy(renderer).build());
     }
 
-    public SidebarLines appendByPlayerLine(Function<Player, String> computer) {
-        return append(LineRenderer.byPlayer().computeBy(computer).build());
+    /**
+     * Append player specific line renderer
+     *
+     * @param renderer
+     *         the renderer
+     * @return self
+     */
+    @Nonnull
+    public SidebarLines appendByPlayerLine(@Nonnull Function<Player, String> renderer) {
+        return append(LineRenderer.byPlayer().renderBy(renderer).build());
     }
 
     /*********************************************************
@@ -70,7 +137,7 @@ public final class SidebarLines {
         }
 
         for (LineRenderer renderer : lines) {
-            for (Map.Entry<Player, String> entry : renderer.compute(targets).entrySet()) {
+            for (Map.Entry<Player, String> entry : renderer.render(targets).entrySet()) {
                 texts.get(entry.getKey()).add(entry.getValue());
             }
         }
@@ -86,11 +153,10 @@ public final class SidebarLines {
                 Score score = scores.get(i);
                 String line = value.get(i);
                 if (line.length() > 28) {
-                    Bukkit.getLogger()
-                            .severe(String.format(
-                                    "Can't render scoreboard sidebar for player '%s' on line %d. data is %s",
-                                    player.getName(), i, line
-                            ));
+                    Bukkit.getLogger().severe(String.format(
+                            "Can't renderSidebar scoreboard sidebar for player '%s' on line %d. data is %s",
+                            player.getName(), i, line
+                    ));
                     line = "CAN'T RENDER THIS";
                 }
                 Team team = scoreboard._handle().getTeam(score.getEntry());
@@ -112,5 +178,10 @@ public final class SidebarLines {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "SidebarLines(" + lines.size() + " element" + (lines.size() == 1 ? "" : "s") + ")";
     }
 }
