@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.github.ranolp'
+version = '1.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'destroystokyo-repo'
+        url = 'https://repo.destroystokyo.com/repository/maven-public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+dependencies {
+    implementation group: 'com.destroystokyo.paper', name: 'paper-api', version: '1.13-R0.1-SNAPSHOT'
+    implementation project(':')
+}

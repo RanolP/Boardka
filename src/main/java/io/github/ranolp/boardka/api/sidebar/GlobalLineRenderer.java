@@ -9,12 +9,12 @@ import java.util.Set;
 
 public abstract class GlobalLineRenderer extends LineRenderer {
     @Nonnull
-    public abstract String compute();
+    public abstract String render();
 
     @Nonnull
     @Override
-    public final Map<Player, String> compute(@Nonnull Set<Player> players) {
-        String data = compute();
+    public final Map<Player, String> render(@Nonnull Set<Player> players) {
+        String data = render();
 
         Map<Player, String> map = new HashMap<>();
         for (Player it : players) {

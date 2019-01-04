@@ -10,11 +10,11 @@ public abstract class GroupedLineRenderer<T> extends LineRenderer {
     public abstract T group(@Nonnull Player player);
 
     @Nonnull
-    protected abstract Map<Player, String> compute(@Nonnull T object, @Nonnull Set<Player> player);
+    protected abstract Map<Player, String> render(@Nonnull T object, @Nonnull Set<Player> player);
 
     @Nonnull
     @Override
-    public final Map<Player, String> compute(@Nonnull Set<Player> players) {
+    public final Map<Player, String> render(@Nonnull Set<Player> players) {
         Map<T, List<Player>> map = new HashMap<>();
         for (Player player : players) {
             map.computeIfAbsent(group(player), k -> new ArrayList<>()).add(player);
@@ -22,7 +22,7 @@ public abstract class GroupedLineRenderer<T> extends LineRenderer {
 
         Map<Player, String> result = new HashMap<>();
         for (Map.Entry<T, List<Player>> groupEntry : map.entrySet()) {
-            Map<Player, String> computed = compute(groupEntry.getKey(), new HashSet<>(groupEntry.getValue()));
+            Map<Player, String> computed = render(groupEntry.getKey(), new HashSet<>(groupEntry.getValue()));
             for (Map.Entry<Player, String> lineEntry : computed.entrySet()) {
                 result.put(lineEntry.getKey(), lineEntry.getValue());
             }

@@ -1,115 +1,157 @@
 package io.github.ranolp.boardka.api;
 
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.scoreboard.Scoreboard;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
-public class Boardka {
-    private static final Queue<Boardka> AVAILABLE = new LinkedList<>();
-    private static final Map<UUID, Boardka> USING = new HashMap<>();
+/**
+ * Provides scoreboard assigned to player, and easy way to use the scoreboard.
+ */
+public abstract class Boardka {
+    static final Queue<_PlayerBoardka> AVAILABLE = new LinkedList<>();
+    static final Map<UUID, _PlayerBoardka> USING = new HashMap<>();
 
-    private Scoreboard handle;
-    private boolean disposed = false;
-    private Sidebar sidebar;
-
-    private Boardka(Player target) {
-        this._target = target;
-        handle = Bukkit.getScoreboardManager().getNewScoreboard();
-        this._target.setScoreboard(handle);
+    Boardka() {
     }
 
-    Scoreboard _handle() {
-        _checkDisposed();
-        return handle;
+    /**
+     * Get Boardka from PlayerEvent.
+     *
+     * @param event
+     *         a event to get a player
+     * @return Boardka which is assigned to the player
+     */
+    @Nonnull
+    public static Boardka of(@Nonnull PlayerEvent event) {
+        return of(event.getPlayer());
     }
 
-    public Sidebar sidebar() {
-        if (sidebar == null) {
-            sidebar = new Sidebar(this);
+    /**
+     * Get Boardka from Player.
+     *
+     * @param player
+     *         a player
+     * @return Boardka which is assigned to the player
+     */
+    @Nonnull
+    public static Boardka of(@Nullable Player player) {
+        if (player == null) {
+            return _EmptyBoardka.SingletonHolder.INSTANCE;
         }
-        return sidebar;
-    }
-
-    public boolean isDisposed() {
-        return disposed;
-    }
-
-    public void dispose(boolean safe) {
-        if (disposed) {
-            if (safe) {
-                return;
-            } else {
-                throw new IllegalStateException("Already disposed");
-            }
-        }
-        USING.remove(_target.getUniqueId(), this);
-        AVAILABLE.add(this);
-        // is it ok?
-        if (_target.getScoreboard() == handle) {
-            _target.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-        }
-        sidebar._dispose();
-        disposed = true;
-    }
-
-    public static Boardka of(PlayerEvent e) {
-        return of(e.getPlayer());
-    }
-
-    public static Boardka of(Player player) {
-        Objects.requireNonNull(player, "player");
         if (USING.containsKey(player.getUniqueId())) {
             return USING.get(player.getUniqueId());
         } else if (!AVAILABLE.isEmpty()) {
-            Boardka scoreboard = AVAILABLE.poll();
-            scoreboard._updateTarget(player);
+            _PlayerBoardka scoreboard = AVAILABLE.poll();
+            scoreboard._reuse();
+            scoreboard._target = player;
+            player.setScoreboard(scoreboard._handle());
             USING.put(player.getUniqueId(), scoreboard);
             return scoreboard;
         } else {
-            Boardka scoreboard = new Boardka(player);
+            _PlayerBoardka scoreboard = new _PlayerBoardka(player);
             USING.put(player.getUniqueId(), scoreboard);
             return scoreboard;
         }
     }
 
-    public static void dispose(PlayerEvent e) {
-        dispose(e.getPlayer());
+    /**
+     * Get Boardka from EntityEvent. If the entity isn't player, returns empty Boardka.
+     *
+     * @param event
+     *         a event to get a player
+     * @return if the entity is player, return Boardka which is assigned to the player, or else return empty Boardka
+     */
+    @Nonnull
+    public static Boardka of(@Nonnull EntityEvent event) {
+        return of(event.getEntity());
     }
 
-    public static void dispose(PlayerEvent e, boolean safe) {
-        dispose(e.getPlayer(), safe);
+    /**
+     * Get Boardka from Entity. If the entity isn't player, returns empty Boardka.
+     *
+     * @param entity
+     *         a entity that may be a player
+     * @return if the entity is player, return Boardka which is assigned to the player, or else return empty Boardka
+     */
+    @Nonnull
+    public static Boardka of(@Nullable Entity entity) {
+        return entity instanceof Player ? of((Player) entity) : _EmptyBoardka.SingletonHolder.INSTANCE;
     }
 
-    public static void dispose(Player player) {
-        dispose(player, true);
+
+    /**
+     * Dispose Boardka from PlayerEvent.
+     *
+     * @param event
+     *         a event
+     */
+    public static void dispose(@Nonnull PlayerEvent event) {
+        dispose(event.getPlayer());
     }
 
-    public static void dispose(Player player, boolean safe) {
-        if (USING.containsKey(player.getUniqueId())) {
+    /**
+     * Dispose Boardka from PlayerEvent.
+     *
+     * @param event
+     *         a event
+     * @param safe
+     *         is disposing safety
+     */
+    public static void dispose(@Nonnull PlayerEvent event, boolean safe) {
+        dispose(event.getPlayer(), safe);
+    }
+
+    /**
+     * Dispose Boardka from Player.
+     *
+     * @param player
+     *         a player
+     */
+    public static void dispose(@Nullable Player player) {
+        if (player != null) {
+            dispose(player, true);
+        }
+    }
+
+    /**
+     * Dispose Boardka from Player.
+     *
+     * @param player
+     *         a player
+     * @param safe
+     *         is disposing safety
+     */
+    public static void dispose(@Nullable Player player, boolean safe) {
+        if (player != null && USING.containsKey(player.getUniqueId())) {
             USING.get(player.getUniqueId()).dispose(safe);
         }
     }
 
-    /*********************************************************
-     *                                                       *
-     *                      ! WARNING !                      *
-     *     Following methods, fields are used internally     *
-     *             You MUST NOT use the methods.             *
-     *                                                       *
-     *********************************************************/
+    /**
+     * Get sidebar manager object.
+     *
+     * @return the sidebar object
+     */
+    @Nonnull
+    public abstract Sidebar sidebar();
 
-    Player _target;
+    /**
+     * Check is boardka disposed.
+     *
+     * @return is disposed
+     */
+    public abstract boolean isDisposed();
 
-    private void _updateTarget(Player target) {
-        this._target = target;
-    }
-
-    private void _checkDisposed() {
-        if (disposed) {
-            throw new IllegalStateException("Disposed");
-        }
-    }
+    /**
+     * Disposes Boardka object.
+     *
+     * @param safe
+     *         is disposing safety
+     */
+    public abstract void dispose(boolean safe);
 }
